@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Link,
@@ -8,16 +8,62 @@ import {
   Typography,
   CardHeader,
   IconButton,
+  Menu,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { fDate } from "../../utils/formatTime";
-
+import MenuItem from "@mui/material/MenuItem";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { styled } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PostReaction from "./PostReaction";
 import CommentForm from "../comment/CommentForm";
 import CommentList from "../comment/CommentList";
+const IconStyle = styled(Box)(({ theme }) => ({
+  width: 20,
+  height: 20,
+  marginTop: 1,
+  flexShrink: 0,
+  marginRight: theme.spacing(2),
+}));
 
 function PostCard({ post }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDelete = () => {
+    // Handle delete functionality here
+    handleClose();
+  };
+
+  // const handleEdit = () => {
+  //   // Handle edit functionality here
+  //   handleClose();
+  // };
+
+  const renderMenu = (
+    <Card anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+      <Stack spacing={2} sx={{ p: 3 }}>
+        <Stack direction="row">
+          <IconStyle>
+            <DeleteIcon />
+          </IconStyle>
+          <Typography variant="body2">
+            <MenuItem onClick={handleDelete}>Delete</MenuItem>
+          </Typography>
+        </Stack>
+      </Stack>
+
+      {/* <MenuItem onClick={handleEdit}>Edit</MenuItem> */}
+    </Card>
+  );
   return (
     <Card>
       <CardHeader
@@ -46,10 +92,11 @@ function PostCard({ post }) {
         }
         action={
           <IconButton>
-            <MoreVertIcon sx={{ fontSize: 30 }} />
+            <MoreVertIcon sx={{ fontSize: 30 }} onClick={handleClick} />
           </IconButton>
         }
       />
+      {renderMenu}
 
       <Stack spacing={2} sx={{ p: 3 }}>
         <Typography>{post.content}</Typography>
