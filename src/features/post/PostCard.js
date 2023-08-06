@@ -22,7 +22,7 @@ import PostReaction from "./PostReaction";
 import CommentForm from "../comment/CommentForm";
 import CommentList from "../comment/CommentList";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePost, editPost } from "./postSlice";
+import { deletePost } from "./postSlice";
 import useAuth from "../../hooks/useAuth";
 import EditIcon from "@mui/icons-material/Edit";
 import EditForm from "./EditForm";
@@ -40,11 +40,11 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 420,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
-  p: 4,
+  p: 3,
 };
 
 function PostCard({ post, userID }) {
@@ -79,7 +79,7 @@ function PostCard({ post, userID }) {
   const renderMenu = (
     <>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        <Stack spacing={5} sx={{ p: 2, width: 200 }}>
+        <Stack spacing={3} sx={{ p: 0, width: 200 }}>
           <Stack direction="row">
             <IconStyle sx={{ mr: 0 }}>
               <DeleteIcon sx={{ justifyContent: "center" }} />
@@ -89,7 +89,7 @@ function PostCard({ post, userID }) {
             </Typography>
           </Stack>
         </Stack>
-        <Stack spacing={5} sx={{ p: 2, width: 200 }}>
+        <Stack spacing={3} sx={{ p: 0, width: 200 }}>
           <Stack direction="row">
             <IconStyle sx={{ mr: 0 }}>
               <EditIcon sx={{ justifyContent: "center" }} />
@@ -107,6 +107,7 @@ function PostCard({ post, userID }) {
         }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{ padding: 0 }}
       >
         <Box sx={style}>
           <EditForm post={post} handleCloseModal={handleCloseModal} />
@@ -118,6 +119,7 @@ function PostCard({ post, userID }) {
     <Card>
       <CardHeader
         disableTypography
+        sx={{ padding: 0 }}
         avatar={
           <Avatar src={post?.author?.avatarUrl} alt={post?.author?.name} />
         }
@@ -143,7 +145,7 @@ function PostCard({ post, userID }) {
         action={
           <IconButton>
             <MoreVertIcon
-              sx={{ fontSize: 30 }}
+              sx={{ fontSizee: 30 }}
               onClick={handleClick}
               loading={isLoading}
             />
@@ -154,7 +156,6 @@ function PostCard({ post, userID }) {
       {user._id === userID && renderMenu}
       <Stack spacing={2} sx={{ p: 3 }}>
         <Typography>{post.content}</Typography>
-
         {post.image && (
           <Box
             sx={{
@@ -169,7 +170,7 @@ function PostCard({ post, userID }) {
         )}
 
         <PostReaction post={post} />
-        <CommentList postId={post._id} />
+        <CommentList postId={post._id} userID={userID} />
         <CommentForm postId={post._id} />
       </Stack>
     </Card>

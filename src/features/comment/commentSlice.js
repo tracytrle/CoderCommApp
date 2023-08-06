@@ -51,6 +51,17 @@ const slice = createSlice({
       const { commentId, reactions } = action.payload;
       state.commentsById[commentId].reactions = reactions;
     },
+
+    deleteCommentSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      // const { post, _id } = action.payload;
+      // state.commentsById[_id] = null;
+      // state.commentsByPost[post] = state.commentsByPost[post].filter(
+      //   (comment) => comment._id !== _id
+      // );
+      // state.totalCommentsByPost[post] -= 1;
+    },
   },
 });
 
@@ -90,7 +101,9 @@ export const createComment =
         content,
         postId,
       });
-      dispatch(slice.actions.createCommentSuccess(response.data));
+      dispatch(
+        slice.actions.createCommentSuccess({ ...response.data, postId })
+      );
       dispatch(getComments({ postId }));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
@@ -119,3 +132,18 @@ export const sendCommentReaction =
       toast.error(error.message);
     }
   };
+
+export const deleteComment = (id) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const response = await apiService.delete(`/comments/${id}`);
+    dispatch(slice.actions.deleteCommentSuccess({ ...response.data }));
+    // console.log("print: id: ", response.data._id);
+    const postId = response.data.post;
+    // console.log("print: postid: ", postId);
+    dispatch(getComments({ postId }));
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};

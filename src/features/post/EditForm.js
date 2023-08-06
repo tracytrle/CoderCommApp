@@ -1,5 +1,14 @@
 import React, { useCallback } from "react";
-import { Box, Card, alpha, Stack } from "@mui/material";
+import {
+  Box,
+  Card,
+  alpha,
+  Stack,
+  Avatar,
+  CardHeader,
+  Typography,
+  Link,
+} from "@mui/material";
 
 import { FormProvider, FTextField, FUploadImage } from "../../components/form";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +17,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { editPost } from "./postSlice";
 import { LoadingButton } from "@mui/lab";
+import { Link as RouterLink } from "react-router-dom";
+
+import { fDate } from "../../utils/formatTime";
 
 const yupSchema = Yup.object().shape({
   content: Yup.string().required("Content is required"),
@@ -58,7 +70,33 @@ function EditForm({ post, handleCloseModal }) {
   };
 
   return (
-    <Card sx={{ p: 3 }}>
+    <Card sx={{ p: 2 }}>
+      <CardHeader
+        sx={{ mt: 0, justifyContent: "flex-start", mb: 2 }}
+        disableTypography
+        avatar={
+          <Avatar src={post?.author?.avatarUrl} alt={post?.author?.name} />
+        }
+        title={
+          <Link
+            variant="subtitle2"
+            color="text.primary"
+            component={RouterLink}
+            sx={{ fontWeight: 600 }}
+            to={`/user/${post.author._id}`}
+          >
+            {post?.author?.name}
+          </Link>
+        }
+        subheader={
+          <Typography
+            variant="caption"
+            sx={{ display: "block", color: "text.secondary" }}
+          >
+            {fDate(post.createdAt)}
+          </Typography>
+        }
+      />
       <FormProvider methods={methods}>
         <Stack spacing={2}>
           <FTextField
@@ -76,9 +114,9 @@ function EditForm({ post, handleCloseModal }) {
           />
 
           <FUploadImage
-            name={post.image}
+            name="content"
             accept="image/*"
-            defaultValue={post.image}
+            value={post.image}
             maxSize={3145728}
             onDrop={handleDrop}
           />

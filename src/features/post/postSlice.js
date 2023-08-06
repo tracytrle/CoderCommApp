@@ -147,10 +147,7 @@ export const sendPostReaction =
 export const deletePost = (id) => async (dispatch) => {
   // dispatch(slice.action.startLoading);
   try {
-    // console.log("postiD: ", post._id);
     const response = await apiService.delete(`/posts/${id}`);
-    console.log("print id from data: ", response.data._id);
-    console.log("print id : ", id);
 
     dispatch(slice.actions.deletePostSuccess({ ...response.data, id }));
 
@@ -165,9 +162,6 @@ export const deletePost = (id) => async (dispatch) => {
 export const editPost = (id, data) => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    // upload image to cloudinary
-    console.log("postslice print id: ", id);
-    console.log("postslice print content: ", data.content);
     const content = data.content;
 
     const imageUrl = await cloudinaryUpload(data.image);
