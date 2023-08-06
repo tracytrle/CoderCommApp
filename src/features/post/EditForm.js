@@ -18,7 +18,7 @@ const defaultValues = {
   image: null,
 };
 
-function EditForm({ post }) {
+function EditForm({ post, handleCloseModal }) {
   const { isLoading } = useSelector((state) => state.post);
 
   const methods = useForm({
@@ -51,18 +51,20 @@ function EditForm({ post }) {
 
   const onSubmit = (updatedData) => {
     dispatch(editPost(post._id, updatedData));
+    handleCloseModal();
   };
 
   return (
     <Card sx={{ p: 3 }}>
-      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+      <FormProvider methods={methods}>
         <Stack spacing={2}>
           <FTextField
             name="content"
             multiline
             fullWidth
             rows={4}
-            placeholder={post.content}
+            defaultValue={post.content}
+            // placeholder={post.content}
             sx={{
               "& fieldset": {
                 borderWidth: `1px !important`,
@@ -90,6 +92,7 @@ function EditForm({ post }) {
               variant="contained"
               size="small"
               loading={isSubmitting || isLoading}
+              onClick={handleSubmit(onSubmit)}
             >
               Save
             </LoadingButton>

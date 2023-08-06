@@ -54,13 +54,14 @@ function PostCard({ post, userID }) {
   const { isLoading } = useSelector((state) => state.post);
   const [open, setOpen] = React.useState(false);
 
-  const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false);
+  const handleOpenModal = (e) => {
+    setOpen(true);
+    handleClose();
+  };
 
-  // const handleEdit = () => {
-  //   openModal();
-  //   handleClose();
-  // };
+  const handleCloseModal = (e) => {
+    setOpen(false);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -76,38 +77,42 @@ function PostCard({ post, userID }) {
   };
 
   const renderMenu = (
-    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-      <Stack spacing={5} sx={{ p: 2, width: 200 }}>
-        <Stack direction="row">
-          <IconStyle sx={{ mr: 0 }}>
-            <DeleteIcon sx={{ justifyContent: "center" }} />
-          </IconStyle>
-          <Typography variant="btn1">
-            <MenuItem onClick={handleDelete}>Delete</MenuItem>
-          </Typography>
+    <>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+        <Stack spacing={5} sx={{ p: 2, width: 200 }}>
+          <Stack direction="row">
+            <IconStyle sx={{ mr: 0 }}>
+              <DeleteIcon sx={{ justifyContent: "center" }} />
+            </IconStyle>
+            <Typography variant="btn1">
+              <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            </Typography>
+          </Stack>
         </Stack>
-      </Stack>
-      <Stack spacing={5} sx={{ p: 2, width: 200 }}>
-        <Stack direction="row">
-          <IconStyle sx={{ mr: 0 }}>
-            <EditIcon sx={{ justifyContent: "center" }} />
-          </IconStyle>
-          <Typography variant="btn1">
-            <MenuItem onClick={handleOpenModal}>Edit</MenuItem>
-          </Typography>
+        <Stack spacing={5} sx={{ p: 2, width: 200 }}>
+          <Stack direction="row">
+            <IconStyle sx={{ mr: 0 }}>
+              <EditIcon sx={{ justifyContent: "center" }} />
+            </IconStyle>
+            <Typography variant="btn1">
+              <MenuItem onClick={handleOpenModal}>Edit</MenuItem>
+            </Typography>
+          </Stack>
         </Stack>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <EditForm post={post} />
-          </Box>
-        </Modal>
-      </Stack>
-    </Menu>
+      </Menu>
+      <Modal
+        open={open}
+        BackdropProps={{
+          onClick: null, // Disable backdrop click behavior
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <EditForm post={post} handleCloseModal={handleCloseModal} />
+        </Box>
+      </Modal>
+    </>
   );
   return (
     <Card>
