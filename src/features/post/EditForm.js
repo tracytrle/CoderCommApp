@@ -23,7 +23,10 @@ function EditForm({ post, handleCloseModal }) {
 
   const methods = useForm({
     resolver: yupResolver(yupSchema),
-    defaultValues,
+    defaultValues: {
+      content: `${post.content}`,
+      image: `${post.image}`,
+    },
   });
   const {
     handleSubmit,
@@ -64,7 +67,6 @@ function EditForm({ post, handleCloseModal }) {
             fullWidth
             rows={4}
             defaultValue={post.content}
-            // placeholder={post.content}
             sx={{
               "& fieldset": {
                 borderWidth: `1px !important`,
@@ -76,6 +78,7 @@ function EditForm({ post, handleCloseModal }) {
           <FUploadImage
             name={post.image}
             accept="image/*"
+            defaultValue={post.image}
             maxSize={3145728}
             onDrop={handleDrop}
           />
