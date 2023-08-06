@@ -19,6 +19,10 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PostReaction from "./PostReaction";
 import CommentForm from "../comment/CommentForm";
 import CommentList from "../comment/CommentList";
+import { useDispatch, useSelector } from "react-redux";
+import { deletePost } from "./postSlice";
+import useAuth from "../../hooks/useAuth";
+
 const IconStyle = styled(Box)(({ theme }) => ({
   width: 20,
   height: 20,
@@ -27,8 +31,11 @@ const IconStyle = styled(Box)(({ theme }) => ({
   marginRight: theme.spacing(2),
 }));
 
-function PostCard({ post }) {
+function PostCard({ post, userID }) {
   const [anchorEl, setAnchorEl] = useState(null);
+  const dispatch = useDispatch();
+  const { user } = useAuth();
+  const { isLoading } = useSelector((state) => state.post);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -39,7 +46,7 @@ function PostCard({ post }) {
   };
 
   const handleDelete = () => {
-    // Handle delete functionality here
+    dispatch(deletePost(post));
     handleClose();
   };
 
@@ -49,20 +56,19 @@ function PostCard({ post }) {
   // };
 
   const renderMenu = (
-    <Card anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-      <Stack spacing={2} sx={{ p: 3 }}>
+    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+      <Stack spacing={5} sx={{ p: 2, width: 200 }}>
         <Stack direction="row">
-          <IconStyle>
-            <DeleteIcon />
+          <IconStyle sx={{ mr: 0 }}>
+            <DeleteIcon sx={{ justifyContent: "center" }} />
           </IconStyle>
-          <Typography variant="body2">
+          <Typography variant="btn1">
             <MenuItem onClick={handleDelete}>Delete</MenuItem>
           </Typography>
         </Stack>
       </Stack>
-
       {/* <MenuItem onClick={handleEdit}>Edit</MenuItem> */}
-    </Card>
+    </Menu>
   );
   return (
     <Card>
@@ -92,12 +98,15 @@ function PostCard({ post }) {
         }
         action={
           <IconButton>
-            <MoreVertIcon sx={{ fontSize: 30 }} onClick={handleClick} />
+            <MoreVertIcon
+              sx={{ fontSize: 30 }}
+              onClick={handleClick}
+              loading={isLoading}
+            />
           </IconButton>
         }
       />
-      {renderMenu}
-
+      {user._id === userID && renderMenu}
       <Stack spacing={2} sx={{ p: 3 }}>
         <Typography>{post.content}</Typography>
 

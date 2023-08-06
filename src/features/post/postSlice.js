@@ -59,6 +59,18 @@ const slice = createSlice({
       const { postId, reactions } = action.payload;
       state.postsById[postId].reactions = reactions;
     },
+
+    deletePostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+
+      const { success, _id } = action.payload;
+      if (success) {
+        state.postsById[_id] = null;
+
+        state.currentPagePosts.remove(_id);
+      }
+    },
   },
 });
 
@@ -122,3 +134,17 @@ export const sendPostReaction =
       toast.error(error.message);
     }
   };
+
+export const deletePost = (post) => async (dispatch) => {
+  //   dispatch(slice.action.startLoading());
+  try {
+    console.log("postiD: ", post._id);
+    const response = await apiService.delete(`/posts/${post._id}`);
+
+    dispatch(slice.actions.deletePostSuccess(response.data));
+    toast.success("Deleted successfully");
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};
