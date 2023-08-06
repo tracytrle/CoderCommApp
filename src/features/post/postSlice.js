@@ -64,14 +64,21 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
 
-      const { id } = action.payload;
-      // if (success) {
-      state.postsById[id] = null;
+      const { _id } = action.payload;
+      state.postsById[_id] = null;
       state.currentPagePosts = state.currentPagePosts.filter(
-        (item) => item !== id
+        (item) => item !== _id
       );
-      console.log("size: ", state.currentPagePosts);
-      // }
+    },
+
+    editPostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { _id } = action.payload;
+      state.postsById[_id] = action.payload;
+      // state.currentPagePosts = state.currentPagePosts.filter(
+      //   (item) => item !== _id
+      // );
     },
   },
 });
@@ -108,7 +115,7 @@ export const createPost =
       });
       dispatch(slice.actions.createPostSuccess(response.data));
       toast.success("Post successfully");
-      dispatch(getCurrentUserProfile());
+      // dispatch(getCurrentUserProfile());
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
       toast.error(error.message);
@@ -142,9 +149,36 @@ export const deletePost = (id) => async (dispatch) => {
   try {
     // console.log("postiD: ", post._id);
     const response = await apiService.delete(`/posts/${id}`);
+    console.log("print id from data: ", response.data._id);
+    console.log("print id : ", id);
 
     dispatch(slice.actions.deletePostSuccess({ ...response.data, id }));
-    toast.success("Deleted successfully");
+
+    toast.success("Delete post successfully");
+    // dispatch(getCurrentUserProfile());
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};
+
+export const editPost = (id, data) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    // upload image to cloudinary
+    console.log("postslice print id: ", id);
+    console.log("postslice print content: ", data.content);
+    const content = data.content;
+
+    const imageUrl = await cloudinaryUpload(data.image);
+    const image = imageUrl;
+    const response = await apiService.put(`/posts/${id}`, {
+      content,
+      image,
+    });
+
+    dispatch(slice.actions.editPostSuccess({ ...response.data, id }));
+    toast.success("Update post successfully");
     // dispatch(getCurrentUserProfile());
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
