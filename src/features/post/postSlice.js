@@ -64,12 +64,14 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
 
-      const { success, _id } = action.payload;
-      if (success) {
-        state.postsById[_id] = null;
-
-        state.currentPagePosts.remove(_id);
-      }
+      const { id } = action.payload;
+      // if (success) {
+      state.postsById[id] = null;
+      state.currentPagePosts = state.currentPagePosts.filter(
+        (item) => item !== id
+      );
+      console.log("size: ", state.currentPagePosts);
+      // }
     },
   },
 });
@@ -135,14 +137,15 @@ export const sendPostReaction =
     }
   };
 
-export const deletePost = (post) => async (dispatch) => {
-  //   dispatch(slice.action.startLoading());
+export const deletePost = (id) => async (dispatch) => {
+  // dispatch(slice.action.startLoading);
   try {
-    console.log("postiD: ", post._id);
-    const response = await apiService.delete(`/posts/${post._id}`);
+    // console.log("postiD: ", post._id);
+    const response = await apiService.delete(`/posts/${id}`);
 
-    dispatch(slice.actions.deletePostSuccess(response.data));
+    dispatch(slice.actions.deletePostSuccess({ ...response.data, id }));
     toast.success("Deleted successfully");
+    // dispatch(getCurrentUserProfile());
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
     toast.error(error.message);

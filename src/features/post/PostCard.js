@@ -46,7 +46,7 @@ function PostCard({ post, userID }) {
   };
 
   const handleDelete = () => {
-    dispatch(deletePost(post));
+    dispatch(deletePost(post._id));
     handleClose();
   };
 
