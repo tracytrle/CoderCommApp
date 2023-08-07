@@ -9,6 +9,7 @@ import {
   CardHeader,
   IconButton,
   Menu,
+  Button,
 } from "@mui/material";
 import Modal from "@mui/material/Modal";
 
@@ -44,7 +45,23 @@ const style = {
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
+
   p: 3,
+};
+
+const confirmStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 420,
+  height: 120,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  borderRadius: 1,
+  boxShadow: 24,
+  p: 3,
+  // display: "block",
 };
 
 function PostCard({ post, userID }) {
@@ -52,7 +69,8 @@ function PostCard({ post, userID }) {
   const dispatch = useDispatch();
   const { user } = useAuth();
   const { isLoading } = useSelector((state) => state.post);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const handleOpenModal = (e) => {
     setOpen(true);
@@ -73,7 +91,22 @@ function PostCard({ post, userID }) {
 
   const handleDelete = () => {
     dispatch(deletePost(post._id));
-    handleClose();
+    // handleClose();
+    handleCloseConfirmModal();
+  };
+  const handleCancel = () => {
+    handleCloseConfirmModal();
+  };
+
+  const handleOpenConfirmModal = (e) => {
+    if (user._id === userID) {
+      setOpenConfirm(true);
+      handleClose();
+    }
+  };
+
+  const handleCloseConfirmModal = (e) => {
+    setOpenConfirm(false);
   };
 
   const renderMenu = (
@@ -85,7 +118,7 @@ function PostCard({ post, userID }) {
               <DeleteIcon sx={{ justifyContent: "center" }} />
             </IconStyle>
             <Typography variant="btn1">
-              <MenuItem onClick={handleDelete}>Delete</MenuItem>
+              <MenuItem onClick={handleOpenConfirmModal}>Delete</MenuItem>
             </Typography>
           </Stack>
         </Stack>
@@ -111,6 +144,62 @@ function PostCard({ post, userID }) {
       >
         <Box sx={style}>
           <EditForm post={post} handleCloseModal={handleCloseModal} />
+        </Box>
+      </Modal>
+      <Modal
+        open={openConfirm}
+        BackdropProps={{
+          onClick: null,
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={confirmStyle}>
+          <Typography
+            sx={{ mb: 2 }}
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+          >
+            Are you sure you want to delete?
+          </Typography>
+          <Box
+            sx={{
+              position: "relative",
+              mr: 0,
+              marginBottom: 0,
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              sx={{
+                backgroundColor: "primary.main",
+                color: "black",
+                mr: 1,
+                "&:hover": {
+                  backgroundColor: "secondary.main",
+                },
+              }}
+              onClick={handleCancel}
+            >
+              {" "}
+              Cancel
+            </Button>
+            <Button
+              sx={{
+                backgroundColor: "primary.main",
+                color: "black",
+                "&:hover": {
+                  backgroundColor: "secondary.main",
+                },
+              }}
+              onClick={handleDelete}
+            >
+              {" "}
+              Delete
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </>
