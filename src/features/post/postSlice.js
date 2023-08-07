@@ -76,9 +76,6 @@ const slice = createSlice({
       state.error = null;
       const { _id } = action.payload;
       state.postsById[_id] = action.payload;
-      // state.currentPagePosts = state.currentPagePosts.filter(
-      //   (item) => item !== _id
-      // );
     },
   },
 });
@@ -115,7 +112,7 @@ export const createPost =
       });
       dispatch(slice.actions.createPostSuccess(response.data));
       toast.success("Post successfully");
-      // dispatch(getCurrentUserProfile());
+      dispatch(getCurrentUserProfile());
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
       toast.error(error.message);
@@ -145,14 +142,12 @@ export const sendPostReaction =
   };
 
 export const deletePost = (id) => async (dispatch) => {
-  // dispatch(slice.action.startLoading);
   try {
     const response = await apiService.delete(`/posts/${id}`);
 
     dispatch(slice.actions.deletePostSuccess({ ...response.data, id }));
 
     toast.success("Delete post successfully");
-    // dispatch(getCurrentUserProfile());
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
     toast.error(error.message);
@@ -173,7 +168,6 @@ export const editPost = (id, data) => async (dispatch) => {
 
     dispatch(slice.actions.editPostSuccess({ ...response.data, id }));
     toast.success("Update post successfully");
-    // dispatch(getCurrentUserProfile());
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
     toast.error(error.message);
