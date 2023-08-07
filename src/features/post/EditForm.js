@@ -25,11 +25,6 @@ const yupSchema = Yup.object().shape({
   content: Yup.string().required("Content is required"),
 });
 
-const defaultValues = {
-  content: "",
-  image: null,
-};
-
 function EditForm({ post, handleCloseModal }) {
   const { isLoading } = useSelector((state) => state.post);
 
@@ -42,7 +37,6 @@ function EditForm({ post, handleCloseModal }) {
   });
   const {
     handleSubmit,
-    reset,
     setValue,
     formState: { isSubmitting },
   } = methods;
