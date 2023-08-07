@@ -61,7 +61,6 @@ const confirmStyle = {
   borderRadius: 1,
   boxShadow: 24,
   p: 3,
-  // display: "block",
 };
 
 function PostCard({ post, userID }) {
