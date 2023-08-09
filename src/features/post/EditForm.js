@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   Box,
   Card,
@@ -27,11 +27,6 @@ const yupSchema = Yup.object().shape({
 
 function EditForm({ post, handleCloseModal }) {
   const { isLoading } = useSelector((state) => state.post);
-
-  useEffect(() => {
-    console.log("old image: ", `${post.image}`);
-    console.log("old key: ", `${post._id}`);
-  }, []);
 
   const methods = useForm({
     resolver: yupResolver(yupSchema),
